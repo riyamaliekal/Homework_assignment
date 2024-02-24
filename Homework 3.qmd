@@ -1,0 +1,14 @@
+---
+title: "Homework assignment 3"
+author: "Riya Maliekal"
+format: html
+editor: visual
+---
+
+# 2. The Effect of Recommendation on Choice
+
+## Model Fit
+
+-   Load the file and create a model
+
+
