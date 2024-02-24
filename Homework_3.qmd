@@ -1,0 +1,26 @@
+---
+title: "Homework 3"
+author: "Riya Maliekal"
+format: html
+editor: visual
+---
+
+# The Effect of Recommendation on Choice
+- loading the data 
+- We use logistic regression to explain the data as it has a binomial distribution. 
+- fitting a logistic regression model. 
+
+```{r}
+data=read.csv("C:/Users/ASUS/Documents/GitHub/Homework_assignment/recommendations.csv")
+library(tidyverse)
+model=glm(RecommendationFollowed ~ Mode, data = data, family=binomial)
+summary(model)
+library(ggplot2)
+ggplot(data, aes(x = Mode, y = RecommendationFollowed)) +
+  geom_bar(stat = "identity") +
+  geom_point(data = data, aes(x = Mode, y = RecommendationFollowed)) +
+  labs(x = "Recommendation Mode", y = "Following Recommendation", title = "Effect of Recommendation Mode on Whether a Recommendation is Followed") +
+  theme_minimal()
+```
+
+
