@@ -1,2 +1,2 @@
 # Homework_assignment
- Git and Quarto in R 
+ To work on the question 2, we use logistic regression model. 
