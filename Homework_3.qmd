@@ -7,19 +7,38 @@ editor: visual
 
 # The Effect of Recommendation on Choice
 - loading the data 
-- We use logistic regression to explain the data as it has a binomial distribution. 
-- fitting a logistic regression model. 
+- We use logistic regression to explain the data as it has a binary output of whether a recommendation is followed or not (1,0) as the output variable. 
+
 
 ```{r}
 data=read.csv("C:/Users/ASUS/Documents/GitHub/Homework_assignment/recommendations.csv")
-library(tidyverse)
+```
+
+## Fit the logistic regression model. 
+```{r}
+#|eval: FALSE
+suppressWarnings(library(tidyverse))
 model=glm(RecommendationFollowed ~ Mode, data = data, family=binomial)
 summary(model)
-library(ggplot2)
-ggplot(data, aes(x = Mode, y = RecommendationFollowed)) +
-  geom_bar(stat = "identity") +
-  geom_point(data = data, aes(x = Mode, y = RecommendationFollowed)) +
-  labs(x = "Recommendation Mode", y = "Following Recommendation", title = "Effect of Recommendation Mode on Whether a Recommendation is Followed") +
+```
+
+
+## Create a new data frame to use for plotting
+```{r}
+new_data <- data.frame(Mode = c("Auditory", "Visual"))
+```
+
+## Predict the probabilities of following the recommendation for each mode
+
+```{r}
+new_data$prob <- predict(model, new_data, type = "response")
+```
+
+## Create the plot
+```{r}
+ggplot(new_data, aes(x = Mode, y = prob)) +
+  geom_bar(stat = "identity", fill= 'purple', width=0.25) +
+  labs(x = "Recommendation Mode", y = "Probability of Following Recommendation", title = "Effect of Recommendation Mode on Whether a Recommendation is Followed") +
   theme_minimal()
 ```
 
