@@ -20,9 +20,7 @@ ggplot(new_data, aes(x = Mode, y = prob)) +
   labs(x = "Recommendation Mode", y = "Probability of Following Recommendation", title = "Effect of Recommendation Mode on Whether a Recommendation is Followed") +
   theme_minimal()
   
-  
-  
-  
+
 #Trying different plots for beta distribution
 
 ##No:1
@@ -109,5 +107,51 @@ ggplot(prior_student_marks, aes(x, y, group = n)) +
   ggtitle("Distribution of Student Marks (Beta)")
   
   
+No: 4 
+set.seed(100)
+
+priors <- tibble(n = 1:50) %>%
+  group_by(n) %>%
+  mutate(alpha = rbeta(1, 50, 100), beta = rbeta(1, 10, 30))
+
+gen_prior_pred <- function(n, alpha, beta) {
+  x <- seq(0, 1, 0.1) # use a finer resolution for better visualization
+  y <- dbeta(x, alpha, beta)
+  d <- tibble(n = n, alpha = alpha, beta = beta,
+              x = x,
+              y = y)
+  return(d)
+}
+
+prior_student_marks <- pmap_df(priors, gen_prior_pred)
+# Plot histogram
+ggplot(prior_student_marks, aes(x, group = n, fill = alpha)) + 
+  stat_density(binwidth = 0.1, alpha = 0.5, aes(y = ..density..)) +
+  theme_minimal() +
+  labs(x = "Student Marks", y = "Density") +
+  ggtitle("Beta Distribution of Student Marks") +
+  scale_fill_gradient(low = "blue", high = "red")
   
   
+No: 5
+  set.seed(100)
+
+priors <- tibble(n = 1:50) %>%
+  group_by(n) %>%
+  mutate(alpha = rbeta(1, 50, 100), beta = rbeta(1, 10, 30))
+
+gen_prior_pred <- function(n, alpha, beta) {
+  x <- seq(0, 100, 1) # use a finer resolution for better visualization
+  y <- dbeta(x, alpha, beta)
+  d <- tibble(n = n, alpha = alpha, beta = beta,
+              x = x,
+              y = y)
+  return(d)
+}
+
+prior_student_marks <- pmap_df(priors, gen_prior_pred)
+
+ggplot(prior_student_marks, aes(x, y, group = n, fill = beta)) +
+  geom_histogram(aes(y = ..count..), binwidth = 10, alpha = 0.5) +
+  labs(x = "Student Marks", y = "Frequency", title = "Histogram of Student Marks") +
+  theme_minimal() 
