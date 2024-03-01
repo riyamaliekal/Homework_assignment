@@ -103,18 +103,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="the-effect-of-recommendation-on-choice" class="level1">
 <h1>The Effect of Recommendation on Choice</h1>
+<section id="fitting-the-model-and-explanation." class="level2">
+<h2 class="anchored" data-anchor-id="fitting-the-model-and-explanation.">Fitting the model and explanation.</h2>
 <ul>
-<li>loading the data</li>
-<li>We use logistic regression to explain the data as it has a binary output of whether a recommendation is followed or not (1,0) as the output variable.</li>
+<li>We need a model to explain the effect of mode(auditory, visual) and other variables in following recommendations.</li>
+<li>A logistic regression is used because the response variable is a binary output that is; whether a recommendation is followed or not (1,0).</li>
+<li>The response variable here is recommendation followed and this is a binary data (yes/no)</li>
+<li>In the first model, all the variables are used to see how much each of them explains the response variable and their corresponding levels of significance.</li>
+<li>We use the composite intellect for the second model as it is a composite measure of perceived intellect using the ratings of competence, intelligence and thoughtfulness, this avoids the risk of multicollinearity in the model. The other variable is the mode (visual,auditory)</li>
+<li>The second model is used to see how much of the variance of the model is explained by the significant variables from the previous model. In our model it is, the mode and the composite intellect.</li>
 </ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>data<span class="ot">=</span><span class="fu">read.csv</span>(<span class="st">"C:/Users/ASUS/Documents/GitHub/Homework_assignment/recommendations.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="fit-the-logistic-regression-model." class="level2">
-<h2 class="anchored" data-anchor-id="fit-the-logistic-regression-model.">Fit the logistic regression model.</h2>
+<ul>
+<li>Fit the logistic regression model 1.</li>
+</ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#|eval: FALSE</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressWarnings</span>(<span class="fu">library</span>(tidyverse))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressWarnings</span>(<span class="fu">library</span>(tidyverse))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ dplyr     1.1.3     ✔ readr     2.1.5
@@ -127,50 +133,103 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ✖ dplyr::lag()    masks stats::lag()
 ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>model<span class="ot">=</span><span class="fu">glm</span>(RecommendationFollowed <span class="sc">~</span> Mode, <span class="at">data =</span> data, <span class="at">family=</span>binomial)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>model_1<span class="ot">=</span><span class="fu">glm</span>(RecommendationFollowed <span class="sc">~</span> Mode <span class="sc">+</span> Competent <span class="sc">+</span> Intelligent <span class="sc">+</span> Thoughtful <span class="sc">+</span> CompositeIntellect, <span class="at">data =</span> data, <span class="at">family=</span>binomial)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
-glm(formula = RecommendationFollowed ~ Mode, family = binomial, 
-    data = data)
+glm(formula = RecommendationFollowed ~ Mode + Competent + Intelligent + 
+    Thoughtful + CompositeIntellect, family = binomial, data = data)
 
 Coefficients:
-            Estimate Std. Error z value Pr(&gt;|z|)    
-(Intercept)  0.05585    0.07127   0.784    0.433    
-ModeVisual  -0.48583    0.10209  -4.759 1.95e-06 ***
+                     Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)        -1.979e+00  2.011e-01  -9.841  &lt; 2e-16 ***
+ModeVisual         -6.761e-01  1.124e-01  -6.017 1.77e-09 ***
+Competent          -8.813e+06  7.041e+07  -0.125      0.9    
+Intelligent        -8.813e+06  7.041e+07  -0.125      0.9    
+Thoughtful         -8.813e+06  7.041e+07  -0.125      0.9    
+CompositeIntellect  2.644e+07  2.112e+08   0.125      0.9    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 (Dispersion parameter for binomial family taken to be 1)
 
     Null deviance: 2166.0  on 1571  degrees of freedom
-Residual deviance: 2143.2  on 1570  degrees of freedom
-AIC: 2147.2
+Residual deviance: 2001.3  on 1566  degrees of freedom
+AIC: 2013.3
 
 Number of Fisher Scoring iterations: 4</code></pre>
 </div>
 </div>
-</section>
-<section id="create-a-new-data-frame-to-use-for-plotting" class="level2">
-<h2 class="anchored" data-anchor-id="create-a-new-data-frame-to-use-for-plotting">Create a new data frame to use for plotting</h2>
+<ul>
+<li><p>Here, the mode is the only variable that has significance.</p></li>
+<li><p>Fit the logistic regression model 2.</p></li>
+</ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>new_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Mode =</span> <span class="fu">c</span>(<span class="st">"Auditory"</span>, <span class="st">"Visual"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>Mode1<span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data<span class="sc">$</span>Mode)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>model_2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(RecommendationFollowed <span class="sc">~</span> Mode1  <span class="sc">+</span> CompositeIntellect, <span class="at">data =</span> data, <span class="at">family =</span> binomial)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = RecommendationFollowed ~ Mode1 + CompositeIntellect, 
+    family = binomial, data = data)
+
+Coefficients:
+                   Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)        -1.95527    0.19742  -9.904  &lt; 2e-16 ***
+Mode1Visual        -0.73130    0.10963  -6.670 2.55e-11 ***
+CompositeIntellect  0.39219    0.03567  10.994  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 2166.0  on 1571  degrees of freedom
+Residual deviance: 2006.7  on 1569  degrees of freedom
+AIC: 2012.7
+
+Number of Fisher Scoring iterations: 4</code></pre>
 </div>
-</section>
-<section id="predict-the-probabilities-of-following-the-recommendation-for-each-mode" class="level2">
-<h2 class="anchored" data-anchor-id="predict-the-probabilities-of-following-the-recommendation-for-each-mode">Predict the probabilities of following the recommendation for each mode</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>new_data<span class="sc">$</span>prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(model, new_data, <span class="at">type =</span> <span class="st">"response"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<ul>
+<li>Here the mode and the composite intellect are significant.</li>
+<li>Here the intercept -1.96 represents log-odds of following recommendations when all other predictor variables are held constant at zero.<br>
+</li>
+<li>The coefficient of Mode1Visual, which is approximately -0.73, signifies that while holding all other predictor variables constant, receiving the recommendation visually is associated with a decrease in the log-odds of following the recommendation by approximately 0.73 units compared to receiving it through auditory mode.</li>
+<li>The coefficient of Composite Intellect, which is approximately 0.39, indicates that while holding all other predictor variables constant, for every one-unit increase in composite intellect, there is an expected increase of approximately 0.39 units in the log-odds of following the recommendation.</li>
+<li>This implies that higher levels of composite intellect are associated with higher odds of following the recommendation, assuming all other factors remain constant.</li>
+</ul>
 </section>
-<section id="create-the-plot" class="level2">
-<h2 class="anchored" data-anchor-id="create-the-plot">Create the plot</h2>
+<section id="assessment-of-whether-there-is-evidence-for-recommendation-mode-affecting-choice" class="level2">
+<h2 class="anchored" data-anchor-id="assessment-of-whether-there-is-evidence-for-recommendation-mode-affecting-choice">Assessment of whether there is evidence for recommendation mode affecting choice</h2>
+<ul>
+<li>To understand the probability of following recommendation after switching from auditory to visual mode. - We use marginal effects to know the probability of following recommendation</li>
+</ul>
+</section>
+<section id="please-note-the-marginal-effects-is-running-for-r-script-but-there-is-an-error-in-quarto-file." class="level2">
+<h2 class="anchored" data-anchor-id="please-note-the-marginal-effects-is-running-for-r-script-but-there-is-an-error-in-quarto-file.">Please note: The marginal effects is running for R script but there is an error in quarto file.</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(new_data, <span class="fu">aes</span>(<span class="at">x =</span> Mode, <span class="at">y =</span> prob)) <span class="sc">+</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">fill=</span> <span class="st">'purple'</span>, <span class="at">width=</span><span class="fl">0.25</span>) <span class="sc">+</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Recommendation Mode"</span>, <span class="at">y =</span> <span class="st">"Probability of Following Recommendation"</span>, <span class="at">title =</span> <span class="st">"Effect of Recommendation Mode on Whether a Recommendation is Followed"</span>) <span class="sc">+</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(data<span class="sc">$</span>RecommendationFollowed,data<span class="sc">$</span>Mode)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   
+    Auditory Visual
+  0      383    475
+  1      405    309</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>table_data <span class="ot">&lt;-</span> <span class="fu">table</span>(data<span class="sc">$</span>RecommendationFollowed, data<span class="sc">$</span>Mode)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>table_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame.table</span>(table_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(table_df, <span class="fu">aes</span>(<span class="at">x =</span> Var1, <span class="at">y =</span> Freq, <span class="at">fill =</span> Var2)) <span class="sc">+</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Recommendation Followed by Different Modalities"</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Recommendation not followed(0) v/s Recommendation followed(1)"</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Count"</span>) <span class="sc">+</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"lightblue"</span>, <span class="st">"lightgreen"</span>)) <span class="sc">+</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Homework_3_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
 </div>
