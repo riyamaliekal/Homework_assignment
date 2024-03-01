@@ -236,6 +236,49 @@ Number of Fisher Scoring iterations: 4</code></pre>
 </div>
 </section>
 </section>
+<section id="selecting-appropriate-priors" class="level1">
+<h1>Selecting appropriate priors</h1>
+<section id="beta-distribution-with-alpha-and-beta" class="level2">
+<h2 class="anchored" data-anchor-id="beta-distribution-with-alpha-and-beta">3.1 Beta Distribution with alpha and beta</h2>
+<ul>
+<li><p>The parameters used in a beta distribution are alpha and beta.</p></li>
+<li><p>The alpha parameter is the shape parameter that controls the skewness of a beta distribution.</p></li>
+<li><p>The beta parameter is the shape parameter that controls the spread of a beta distribution.</p></li>
+<li><p>The changes that needs to be made to the dependent variables are,</p></li>
+<li><ol type="1">
+<li>to standardise the data, so that mean=0 and SD=1 ; This is a common preprocessing step to ensure that the data is on a consistent scale.</li>
+</ol></li>
+<li><ol start="2" type="1">
+<li>convert the parameters into alpha and beta using the following equation:</li>
+</ol></li>
+<li><p>alpha &lt;- (mu^2 * (1 - mu) / sigma^2 - mu) / (mu - 1)</p></li>
+<li><p>beta &lt;- alpha * (1 - mu) / mu</p></li>
+<li><p>where, mu=mean, sigma^2= standard deviation</p></li>
+</ul>
+</section>
+<section id="example-of-a-beta-distribution-plot-with-alpha10-beta8" class="level2">
+<h2 class="anchored" data-anchor-id="example-of-a-beta-distribution-plot-with-alpha10-beta8">3.2 Example of a beta distribution plot with alpha=10 beta=8</h2>
+<ul>
+<li>The approximate range of the scores is 40%-60%.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="dv">8</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>marks <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="at">length.out =</span> <span class="dv">100</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>pdf <span class="ot">&lt;-</span> <span class="fu">dbeta</span>(marks <span class="sc">/</span> <span class="dv">100</span>, <span class="at">shape1 =</span> alpha, <span class="at">shape2 =</span> beta)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">marks =</span> marks, <span class="at">pdf =</span> pdf)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> marks, <span class="at">y =</span> pdf)) <span class="sc">+</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Example Beta Distribution of Student Marks"</span>) <span class="sc">+</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Student Marks"</span>, <span class="at">y =</span> <span class="st">"Density"</span>) <span class="sc">+</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Homework_3_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
 
 </main>
 <!-- /main column -->

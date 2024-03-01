@@ -20,7 +20,7 @@ editor: visual
 data=read.csv("C:/Users/ASUS/Documents/GitHub/Homework_assignment/recommendations.csv")
 ```
 
--   Fit the logistic regression model 1.
+- Fit the logistic regression model 1.
 
 ```{r}
 suppressWarnings(library(tidyverse))
@@ -29,9 +29,9 @@ model_1=glm(RecommendationFollowed ~ Mode + Competent + Intelligent + Thoughtful
 summary(model_1)
 ```
 
--   Here, the mode is the only variable that has significance.
+- Here, the mode is the only variable that has significance.
 
--   Fit the logistic regression model 2.
+- Fit the logistic regression model 2.
 
 ```{r}
 data$Mode1<- as.factor(data$Mode)
@@ -67,3 +67,39 @@ ggplot(table_df, aes(x = Var1, y = Freq, fill = Var2)) +
   scale_fill_manual(values = c("lightblue", "lightgreen")) +
   theme_minimal()
 ```
+
+# Selecting appropriate priors
+
+## 3.1 Beta Distribution with alpha and beta
+- The parameters used in a beta distribution are alpha and beta.
+- The alpha parameter is the shape parameter that controls the skewness of a beta distribution.
+- The beta parameter is the shape parameter that controls the spread of a beta distribution.
+
+- The changes that needs to be made to the dependent variables are, 
+- 1. to standardise the data, so that mean=0 and SD=1 ; This is a common preprocessing step to ensure that the data is on a consistent scale.
+- 2. convert the parameters into alpha and beta using the following equation: 
+
+- alpha <- (mu^2 * (1 - mu) / sigma^2 - mu) / (mu - 1)
+- beta <- alpha * (1 - mu) / mu
+
+- where, mu=mean, sigma^2= standard deviation
+
+## 3.2  Example of a beta distribution plot with alpha=10 beta=8
+- The approximate range of the scores is 40%-60%.
+
+```{r}
+library(ggplot2)
+alpha <- 10
+beta <- 8
+marks <- seq(0, 100, length.out = 100)
+pdf <- dbeta(marks / 100, shape1 = alpha, shape2 = beta)
+df <- data.frame(marks = marks, pdf = pdf)
+ggplot(df, aes(x = marks, y = pdf)) +
+  geom_line(color = "blue") +
+  ggtitle("Example Beta Distribution of Student Marks") +
+  labs(x = "Student Marks", y = "Density") +
+  theme_minimal()
+```
+
+
+
