@@ -1,6 +1,7 @@
 ---
 title: "Homework 3"
 author: "Riya Maliekal"
+echo: false
 format: html
 editor: visual
 ---
